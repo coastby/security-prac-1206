@@ -1,8 +1,10 @@
 package com.example.prac1206.configuration;
 
 import com.example.prac1206.service.UserService;
+import com.example.prac1206.util.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,6 +27,30 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        //헤더에서 Authorization attribute 꺼내기
+        final String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if(authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")){
+            log.error("header의 형식이 바르지 않습니다.");
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        //토큰 꺼내기
+        String token;
+        try {
+            token = authorizationHeader.split(" ")[1];
+        } catch (Exception e) {
+            log.error("토큰의 형식이 바르지 않습니다. : {}", authorizationHeader);
+            filterChain.doFilter(request,response);
+            return;
+        }
+        //토큰이 유효한지 확인
+        if(JwtTokenUtil.isExpired(token, secretKey)){
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+
         //인증 토큰 만들기
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken("name", null, List.of(new SimpleGrantedAuthority("USER")));
         //토큰 설정하고 SecurityContextHolder에 넘겨주기

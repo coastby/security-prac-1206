@@ -19,4 +19,14 @@ public class JwtTokenUtil {
                 .signWith(SignatureAlgorithm.HS256, key)
                 .compact();
     }
+    //claims을 추출하는 메서드
+    public static Claims extractClaims(String token, String key){
+        return Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
+    }
+
+    //token이 유효한지 체크하는 메서드
+    public static boolean isExpired(String token, String secretKey) {
+        Date expitedDate = extractClaims(token, secretKey).getExpiration();
+        return expitedDate.before(new Date());
+    }
 }
