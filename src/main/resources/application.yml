@@ -1,1 +1,26 @@
 
+server:
+  servlet:
+    encoding:
+      force-response: true
+
+#jpa ??
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: localhost
+    username: root
+    password: 1q2w3e4r
+  #swagger ??
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+#token ? ??
+jwt:
+  token:
+    secret: key
