@@ -29,4 +29,8 @@ public class JwtTokenUtil {
         Date expitedDate = extractClaims(token, secretKey).getExpiration();
         return expitedDate.before(new Date());
     }
+    //token에서 userId 가져오는 메서드
+    public static String getUserId(String token, String secretKey){
+        return extractClaims(token, secretKey).get("userId").toString();
+    }
 }

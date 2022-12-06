@@ -2,6 +2,7 @@ package com.example.prac1206.controller;
 
 import com.example.prac1206.dto.UserRequest;
 import com.example.prac1206.service.UserService;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
